@@ -14,7 +14,7 @@ void main() {
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'welcome to our world',
+      title: 'Welcome To Our Islamic world',
       home: AudioPlayerUrl(),
       routes: {
         '/loging': (context) => LoginPage(),

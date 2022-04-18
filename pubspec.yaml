@@ -38,6 +38,8 @@ dependencies:
   audioplayers: ^0.20.1
   flutter_html: ^2.2.1
   http: ^0.13.4
+  just_audio: ^0.9.20
+  just_audio_libwinmedia:
 
 dev_dependencies:
   flutter_test:
