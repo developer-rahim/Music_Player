@@ -1,5 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:test_app/screen/bottomAppbar.dart';
 
 class AudioPlayerUrl extends StatefulWidget {
   @override
@@ -9,6 +11,8 @@ class AudioPlayerUrl extends StatefulWidget {
 class _AudioPlayerUrlState extends State<AudioPlayerUrl> {
   AudioPlayer audioPlayer = AudioPlayer();
   PlayerState audioPlayerState = PlayerState.PAUSED;
+  Duration position = new Duration();
+  Duration musicLength = new Duration();
   // String url = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3';
   // String url='assets/sounds/AaVzVwbK.mp3';
 
@@ -37,9 +41,12 @@ class _AudioPlayerUrlState extends State<AudioPlayerUrl> {
   /// Optional
   int timeProgress = 0;
   int audioDuration = 0;
-  var title;
+  var alldata;
   var skip;
   bool showdata = false;
+  List dataList = [];
+  int currentIndex = -1;
+  // var data;
 
   /// Optional
   Widget slider() {
@@ -47,16 +54,35 @@ class _AudioPlayerUrlState extends State<AudioPlayerUrl> {
       width: 300.0,
       child: Slider.adaptive(
           value: timeProgress.toDouble(),
-          max: audioDuration.toDouble() - timeProgress.toDouble(),
+          max: audioDuration.toDouble(),
           onChanged: (value) {
             seekToSec(value.toInt());
+          //   print(audioDuration.toDouble());
+          //   print(value);
+          // if(value== audioDuration.toDouble()){
+          //   indexloop ++;
+          //   setState(() {
+          //     alldata=musicList[indexloop];
+          //   });
+          // }
+          
           }),
     );
   }
-
+ nextSongAutomatic({int p=0, int a=0}){
+  if(p == a){
+    indexloop ++;
+    setState(() {
+      alldata=musicList[indexloop];
+    });
+  }
+}
   @override
   void initState() {
     super.initState();
+
+    dataList.add(alldata);
+    print(dataList);
 
     /// Compulsory
     audioPlayer.onPlayerStateChanged.listen((state) {
@@ -68,11 +94,11 @@ class _AudioPlayerUrlState extends State<AudioPlayerUrl> {
     /// Optional
 
     audioPlayer.play(showdata
-        ? title['url']
+        ? alldata['url']
         : null); // Triggers the onDurationChanged listener and sets the max duration string
     audioPlayer.onDurationChanged.listen((Duration duration) {
       setState(() {
-        audioDuration = duration.inSeconds - timeProgress;
+        audioDuration = duration.inSeconds;
       });
     });
     audioPlayer.onAudioPositionChanged.listen((Duration position) async {
@@ -93,7 +119,7 @@ class _AudioPlayerUrlState extends State<AudioPlayerUrl> {
   /// Compulsory
   playMusic() async {
     // Add the parameter "isLocal: true" if you want to access a local file
-    await audioPlayer.play(showdata ? title['url'] : null);
+    await audioPlayer.play(showdata ? alldata['url'] : null);
   }
 
   /// Compulsory
@@ -116,9 +142,19 @@ class _AudioPlayerUrlState extends State<AudioPlayerUrl> {
     return '$minuteString:$secondString'; // Returns a string with the format mm:ss
   }
 
+  int indexloop = 0;
+  int seletedindex = -1;
+  bool playsymbol = false;
+  onselectedIndex(int index) {
+    setState(() {
+      seletedindex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // bottomNavigationBar: BottomBarMusic () ,
       body: Container(
           alignment: Alignment.center,
           child: Column(
@@ -129,29 +165,45 @@ class _AudioPlayerUrlState extends State<AudioPlayerUrl> {
                   shrinkWrap: true,
                   itemCount: musicList.length,
                   // itemExtent: 120,
-                  itemBuilder: ((context, index) {
-                    var data = musicList[index];
+                  itemBuilder: ((context, indexloop) {
+                    var data = musicList[indexloop];
 
                     return Container(
-                      color: Colors.pink,
-                      child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              showdata = true;
-                              print(showdata);
-                              title = data;
-                              skip = data;
-                              playMusic();
-                            });
-                          },
+                        color: Colors.pink,
+                        child: GestureDetector(
+                          onTap: () {},
                           child: Card(
-                            child: ListTile(
-                              leading: Image.network(data['image']),
-                              title: Text(data['title']),
-                              subtitle: Text(data['singer']),
+                              child: ListTile(
+                            leading: Image.network(data['image']),
+                            title: Text(data['title']),
+                            subtitle: Text(data['singer']),
+                            trailing: IconButton(
+                              onPressed: () {
+                                //  playsymbol=true;
+                                onselectedIndex(indexloop);
+                                setState(() {
+                                  showdata = true;
+                                  // print(showdata);
+                                  alldata = data;
+                                  // print(alldata);
+                                  dataList.add(' AllDara$alldata');
+                                  print(dataList);
+                                  print("index: $indexloop");
+                                  skip = data;
+                                  playMusic();
+                                  audioPlayerState == PlayerState.PLAYING
+                                      ? pauseMusic()
+                                      : playMusic();
+                                });
+                              },
+                              icon: seletedindex != null &&
+                                      seletedindex == indexloop &&
+                                      audioPlayerState == PlayerState.PLAYING
+                                  ? Icon(Icons.pause)
+                                  : Icon(Icons.play_arrow),
                             ),
                           )),
-                    );
+                        ));
                   })),
               SizedBox(
                 height: 10,
@@ -179,22 +231,19 @@ class _AudioPlayerUrlState extends State<AudioPlayerUrl> {
                   ),
                 ),
               ),
-          
 
               /// Optional
 
               showdata
-                  ? Card(
-                      child: ListTile(
-                        leading: Image.network(title['image']),
-                        title: Text(title['title']),
-                        subtitle: Text(title['singer']),
-                      ),
-                    )
-                  : Container(),
-              showdata
                   ? Column(
                       children: [
+                        Card(
+                          child: ListTile(
+                            leading: Image.network(alldata['image']),
+                            title: Text(alldata['title']),
+                            subtitle: Text(alldata['singer']),
+                          ),
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -202,8 +251,9 @@ class _AudioPlayerUrlState extends State<AudioPlayerUrl> {
                             SizedBox(width: 20),
                             Container(width: 200, child: slider()),
                             SizedBox(width: 20),
-                            Text(getTimeString(audioDuration - timeProgress)),
-                          ],
+                            Text(getTimeString(audioDuration)),
+                           // nextSongAutomatic(p:timeProgress, a:audioDuration),
+                        ],
                         ),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,7 +272,10 @@ class _AudioPlayerUrlState extends State<AudioPlayerUrl> {
                               onPressed: () {
                                 setState(() {
                                   setState(() {
-                                    title--;
+                                    indexloop--;
+                                    alldata = musicList[indexloop];
+                                    print(indexloop);
+                                    playMusic();
                                   });
                                 });
                               },
@@ -246,8 +299,28 @@ class _AudioPlayerUrlState extends State<AudioPlayerUrl> {
                               icon: Icon(Icons.skip_next),
                               iconSize: 35.0,
                               onPressed: () {
+                                // if(currentIndex<dataList.length){
+                                //   currentIndex++;
+                                //   pauseMusic();
+                                // }
+                                print("index beforer next:$indexloop");
                                 setState(() {
-                                  title++;
+                                  indexloop++;
+                                  if (indexloop <= musicList.length - 1 &&
+                                      seletedindex <= musicList.length - 1) {
+                                    alldata = musicList[indexloop];
+                                    print(indexloop);
+                                    playMusic();
+                                    seletedindex++;
+                                    // onselectedIndex(indexloop);
+                                  } else {
+                                    setState(() {
+                                      indexloop = 0;
+                                      seletedindex = 0;
+                                      alldata = musicList[indexloop];
+                                      playMusic();
+                                    });
+                                  }
                                 });
                               },
                             )
