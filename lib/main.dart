@@ -6,6 +6,8 @@ import 'package:test_app/helper/navbar.dart';
 import 'package:test_app/leature/leature.dart';
 import 'package:test_app/music.dart';
 import 'package:test_app/musicPlayer/music_player.dart';
+import 'package:test_app/screen/bottomAppbar.dart';
+import 'package:test_app/screen/bottomSheet.dart';
 import 'package:test_app/screen/homePage.dart';
 import 'package:test_app/screen/loginPage.dart';
 import 'package:test_app/screen/signupPage.dart';

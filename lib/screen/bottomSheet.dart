@@ -1,17 +1,37 @@
-import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-//import 'package:just_audio/just_audio.dart';
-//import 'package:just_audio/just_audio.dart';
-import 'package:test_app/screen/bottomAppbar.dart';
-import 'package:test_app/screen/bottomSheet.dart';
+// import 'package:flutter/material.dart';
 
-class AudioPlayerUrl extends StatefulWidget {
+// class BottomBar extends StatefulWidget {
+//   const BottomBar({ Key? key }) : super(key: key);
+
+//   @override
+//   State<BottomBar> createState() => _BottomBarState();
+// }
+
+// class _BottomBarState extends State<BottomBar> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       child: Row(children: [
+//         Icon(Icons.skip_previous_outlined),
+//         Icon(Icons.play_arrow),
+//         Icon(Icons.skip_next_outlined)
+//       ],),
+//     );
+//   }
+// }
+
+import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/material.dart';
+
+class BottomSheetWidget extends StatefulWidget {
+
+
   @override
-  _AudioPlayerUrlState createState() => _AudioPlayerUrlState();
+  State<BottomSheetWidget> createState() => _BottomSheetWidgetState();
 }
 
-class _AudioPlayerUrlState extends State<AudioPlayerUrl> {
+class _BottomSheetWidgetState extends State<BottomSheetWidget> {
+
   AudioPlayer audioPlayer = AudioPlayer();
   PlayerState audioPlayerState = PlayerState.PAUSED;
   Duration position = new Duration();
@@ -158,26 +178,28 @@ class _AudioPlayerUrlState extends State<AudioPlayerUrl> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: GestureDetector(
-        onTap: (){
-           showModalBottomSheet(
-                        useRootNavigator: true,
-                        isScrollControlled: true,
-                        elevation: 100,
-                        backgroundColor: Colors.black38,
-                        context: context,
-                        builder: (context) {
-                          return BottomSheetWidget();
-                        });
-        },
-        child: BottomNavBar ()) ,
+    return  Scaffold(
+      // bottomNavigationBar: GestureDetector(
+      //   onTap: (){
+      //      showModalBottomSheet(
+      //                   useRootNavigator: true,
+      //                   isScrollControlled: true,
+      //                   elevation: 100,
+      //                   backgroundColor: Colors.black38,
+      //                   context: context,
+      //                   builder: (context) {
+      //                     return BottomSheetWidget();
+      //                   });
+      //   },
+      //   child: BottomNavBar ()) ,
+      
       body: Container(
           alignment: Alignment.center,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              
               ListView.builder(
                   shrinkWrap: true,
                   itemCount: musicList.length,
