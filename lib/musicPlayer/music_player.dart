@@ -13,6 +13,7 @@ class _AudioPlayerUrlState extends State<AudioPlayerUrl> {
   PlayerState audioPlayerState = PlayerState.PAUSED;
   Duration position = new Duration();
   Duration musicLength = new Duration();
+  bool isLoop= false;
   // String url = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3';
   // String url='assets/sounds/AaVzVwbK.mp3';
 
@@ -262,9 +263,25 @@ class _AudioPlayerUrlState extends State<AudioPlayerUrl> {
                             IconButton(
                               icon: Icon(Icons.repeat),
                               iconSize: 30.0,
-                              onPressed: () => audioPlayer.seek(
-                                Duration.zero,
-                              ),
+                              onPressed: () {
+                                 if (isLoop == false) {
+                                    audioPlayer
+                                        .setReleaseMode(ReleaseMode.LOOP);
+                                    setState(() {
+                                      isLoop = true;
+                                    });
+                                  } else {
+                                    audioPlayer
+                                        .setReleaseMode(ReleaseMode.RELEASE);
+                                    setState(() {
+                                      isLoop = false;
+                                    });
+                                  }
+                              }
+                             
+                              //  audioPlayer.seek(
+                              //   Duration.zero,
+                              // ),
                             ),
                             IconButton(
                               icon: Icon(Icons.skip_previous),
